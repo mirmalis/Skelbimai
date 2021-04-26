@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Skelbimai.Db;
 
 namespace Skelbimai.Db.Migrations
 {
     [DbContext(typeof(SkelbimaiContext))]
-    partial class SkelbimaiContextModelSnapshot : ModelSnapshot
+    [Migration("20210426114734_Added Classification alternative key")]
+    partial class AddedClassificationalternativekey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

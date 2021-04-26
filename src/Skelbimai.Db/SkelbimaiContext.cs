@@ -18,6 +18,7 @@ namespace Skelbimai.Db
     {
       base.OnModelCreating(mb);
       // HasAlternateKey // isUnique
+      mb.Entity<Core.Classification>().HasAlternateKey(item => new { item.UserID, item.SkelbimasID });
       // HasKey
       // Relations
       // Property

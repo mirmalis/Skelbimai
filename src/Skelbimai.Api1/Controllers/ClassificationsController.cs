@@ -37,45 +37,59 @@ namespace Skelbimai.Api1.Controllers
         .Select(item => new Helpers.Classification.ClassificationDeep(null, item))
         .ToListAsync();
     }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Types.Classification.Classification>> GetSkelbimasClassification(Guid id)
+    {
+      var skelbimasClassification = await _context.Classifications.FirstOrDefaultAsync(item => item.ID == id);
 
-    //// GET: api/Classifications/5
-    //[HttpGet("{id}")]
-    //public async Task<ActionResult<SkelbimasClassification>> GetSkelbimasClassification(Guid id)
-    //{
-    //  var skelbimasClassification = await _context.Classifications.FindAsync(id);
+      if(skelbimasClassification == null) {
+        return NotFound();
+      }
 
-    //  if(skelbimasClassification == null) {
-    //    return NotFound();
-    //  }
+      return new Helpers.Classification.ClassificationDeep(null, skelbimasClassification);
+    }
+    [HttpGet("{userID}/{skelbimasID}")]
+    public async Task<ActionResult<Types.IDed>> GetSkelbimasClassification(Guid userID, int skelbimasID)
+    {
+      var skelbimasClassification = await Helpers.Classification.Classification_UserID_SkelbimasID.Includes(_context.Classifications)
+        .FirstOrDefaultAsync(item => item.UserID == userID && item.SkelbimasID == skelbimasID);
 
-    //  return skelbimasClassification;
-    //} 
+      if(skelbimasClassification == null) {
+        return NotFound();
+      }
+
+      return new Types.IDed() { ID = skelbimasClassification.ID };
+    }
     #endregion
+    #region PUT
+    // PUT: api/Classifications/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutSkelbimasClassification(Guid id, Types.Classification.Put.ClassificationUpdateData data)
+    {
 
-    //// PUT: api/Classifications/5
-    //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    //[HttpPut("{id}")]
-    //public async Task<IActionResult> PutSkelbimasClassification(Guid id, SkelbimasClassification skelbimasClassification)
-    //{
-    //  if(id != skelbimasClassification.ID) {
-    //    return BadRequest();
-    //  }
+      var skelbimasClassification = Helpers.Classification.Core(_context.Classifications.Find(id), data);
 
-    //  _context.Entry(skelbimasClassification).State = EntityState.Modified;
+      if(id != skelbimasClassification.ID) {
+        return BadRequest();
+      }
 
-    //  try {
-    //    await _context.SaveChangesAsync();
-    //  } catch(DbUpdateConcurrencyException) {
-    //    if(!SkelbimasClassificationExists(id)) {
-    //      return NotFound();
-    //    } else {
-    //      throw;
-    //    }
-    //  }
+      _context.Entry(skelbimasClassification).State = EntityState.Modified;
 
-    //  return NoContent();
-    //}
+      try {
+        await _context.SaveChangesAsync();
+      } catch(DbUpdateConcurrencyException) {
+        if(!SkelbimasClassificationExists(id)) {
+          return NotFound();
+        } else {
+          throw;
+        }
+      } 
 
+        return NoContent();
+      }
+    #endregion
+    #region POST
     // POST: api/Classifications
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
@@ -84,22 +98,30 @@ namespace Skelbimai.Api1.Controllers
       if(!_context.Users.Any(item => item.ID == data.WhoID)) {
         return BadRequest("User doesn't exist.");
       }
-      if(!_context.Skelbimai.Any(item => item.ID == data.What.ID )) {
+      if(!_context.Skelbimai.Any(item => item.ID == data.What.ID)) {
         await new SkelbimasController(_context)
           .PostSkelbimas(data.What)
         ;
         //return BadRequest("Skelbimas doesn't exist.");
+      }
+      var x = await _context.Classifications.FirstOrDefaultAsync(item => item.SkelbimasID == data.What.ID && item.UserID == data.WhoID);
+      if(x != null) {
+        //return await PutSkelbimasClassification(x.ID, Helpers.Classification.UpdateData(data));
+
+        return BadRequest("Assignment from this User to this Skelbimas already exist.");
+        //return await PutSkelbimasClassification(, );
       }
 
       var skelbimasClassification = Helpers.Classification.Core(data);
       _context.Classifications.Add(skelbimasClassification);
       await _context.SaveChangesAsync();
 
-      return CreatedAtAction("GetClassifications", new { userID = skelbimasClassification.UserID, skelbimasID = skelbimasClassification.SkelbimasID }, 
+      return CreatedAtAction("GetClassifications", new { userID = skelbimasClassification.UserID, skelbimasID = skelbimasClassification.SkelbimasID },
         new Helpers.Classification.ClassificationDeep(null, skelbimasClassification)
       );
     }
-
+    #endregion
+    #region DELETE
     //// DELETE: api/Classifications/5
     //[HttpDelete("{id}")]
     //public async Task<IActionResult> DeleteSkelbimasClassification(Guid id)
@@ -113,7 +135,8 @@ namespace Skelbimai.Api1.Controllers
     //  await _context.SaveChangesAsync();
 
     //  return NoContent();
-    //}
+    //} 
+    #endregion
 
 
   }

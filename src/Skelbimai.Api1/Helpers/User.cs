@@ -8,12 +8,10 @@ namespace Skelbimai.Api1.Helpers
 {
   internal static class User
   {
-    internal static Core.User Core(Types.User.Post.Create data)
-    {
-      return new Core.User() {
+    internal static Core.User Core(Types.User.Post.Create data) => 
+      new Core.User() {
         Name = data.Name
       };
-    }
     public class UserDeep : Types.User.Get.User
     {
       public UserDeep(Guid? id, Core.User core) : base()
@@ -21,13 +19,9 @@ namespace Skelbimai.Api1.Helpers
         ID = Calc.ID(id, core);
         Name = core.Name;
         Hide = core.Groupings?.Where(item => item.Action == Skelbimai.Core.SkelbimasAction.Hide)
-          .Select(item => new Types.User.Get.User.UsersSkelbimas() {
-            ID = item.SkelbimasID
-          });
+          .Select(item => item.SkelbimasID);
         Show = core.Groupings?.Where(item => item.Action == Skelbimai.Core.SkelbimasAction.Show)
-          .Select(item => new Types.User.Get.User.UsersSkelbimas() {
-            ID = item.SkelbimasID
-          });
+          .Select(item => item.SkelbimasID);
       }
       public static IQueryable<Core.User> Includes(IQueryable<Core.User> Q)
         => Q

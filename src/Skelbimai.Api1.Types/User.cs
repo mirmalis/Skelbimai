@@ -10,15 +10,15 @@ namespace Skelbimai.Api1.Types.User
       public string Name { get; set; }
     }
     public class User : I {
-      public class UsersSkelbimas
-      {
-        public int ID { get; set; }
-        //public Actions.Action Action { get; set; }
-      }
+      //public class UsersSkelbimas
+      //{
+      //  public int ID { get; set; }
+      //  //public Actions.Action Action { get; set; }
+      //}
       public Guid ID { get; set; }
       public string Name { get; set; }
-      public IEnumerable<UsersSkelbimas> Hide { get; set; }
-      public IEnumerable<UsersSkelbimas> Show { get; set; }
+      public IEnumerable<int> Hide { get; set; }
+      public IEnumerable<int> Show { get; set; }
     }
   }
   namespace Post

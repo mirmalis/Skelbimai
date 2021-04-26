@@ -4,5 +4,5 @@ using System.Linq;
 
 namespace Skelbimai.Api1.Types.Actions
 {
-  public enum Action { Unknown, Show, Hide};
+  public enum Action { Show, Hide};
 }

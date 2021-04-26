@@ -12,7 +12,18 @@ namespace Skelbimai.Api1.Helpers
       return new Core.Classification() {
         UserID = data.WhoID,
         SkelbimasID = data.What.ID,
-        Action = ConvertAction(data.Action)
+        Action = CoreAction(data.Action)
+      };
+    }
+    internal static Core.Classification Core(Core.Classification core, Types.Classification.Put.ClassificationUpdateData data)
+    {
+      core.Action = CoreAction(data.Action);
+      return core;
+    }
+    internal static Types.Classification.Put.ClassificationUpdateData UpdateData(Types.Classification.Post.ClassificationCreateData createData)
+    {
+      return new Types.Classification.Put.ClassificationUpdateData() {
+        Action = createData.Action
       };
     }
     internal class ClassificationDeep : Types.Classification.Classification
@@ -21,27 +32,45 @@ namespace Skelbimai.Api1.Helpers
       public ClassificationDeep(Guid? id, Core.Classification core) : base()
       {
         ID = Calc.ID(id, core);
-        this.Who = new X { ID = core.UserID };
-        this.What = new Y { ID = core.SkelbimasID };
-        this.Action = ConvertAction(core.Action);
+        this.User = new() { ID = core.UserID };
+        this.What = new() { ID = core.SkelbimasID };
+        this.Action = TypesAction(core.Action);
       }
       #endregion
-      public static IQueryable<Core.User> Includes(IQueryable<Core.User> Q)
+      public static IQueryable<Core.Classification> Includes(IQueryable<Core.Classification> Q)
+        => Q
+      ;
+    }
+    internal class Classification_UserID_SkelbimasID  : Types.Classification.Classification_UserID_SkelbimasID
+    {
+      #region Constructors
+      public Classification_UserID_SkelbimasID(Guid? id, Core.Classification core) : base()
+      {
+        ID = Calc.ID(id, core);
+        this.Action = TypesAction(core.Action);
+      }
+      #endregion
+      public static IQueryable<Core.Classification> Includes(IQueryable<Core.Classification> Q)
         => Q
       ;
     }
     #region Converters
-    static Types.Actions.Action? ConvertAction(Core.SkelbimasAction core) =>
+    static Types.Actions.Action? TypesAction(Core.SkelbimasAction core) =>
      core switch {
        Skelbimai.Core.SkelbimasAction.Hide => Types.Actions.Action.Hide,
        Skelbimai.Core.SkelbimasAction.Show => Types.Actions.Action.Show,
+       Skelbimai.Core.SkelbimasAction.Unknown => null,
        _ => throw new Exception($"Cannot convert {core} to Public Action.")
      };
-    static Core.SkelbimasAction ConvertAction(Types.Actions.Action type) => type switch {
-      Types.Actions.Action.Hide => Skelbimai.Core.SkelbimasAction.Hide,
-      Types.Actions.Action.Show => Skelbimai.Core.SkelbimasAction.Show,
-      _ => Skelbimai.Core.SkelbimasAction.Unknown
-    };
+    static Core.SkelbimasAction CoreAction(Types.Actions.Action? type) {
+      if(type == null)
+        return Skelbimai.Core.SkelbimasAction.Unknown;
+      return type switch {
+        Types.Actions.Action.Hide => Skelbimai.Core.SkelbimasAction.Hide,
+        Types.Actions.Action.Show => Skelbimai.Core.SkelbimasAction.Show,
+        _ => Skelbimai.Core.SkelbimasAction.Unknown
+      };
+    }
     #endregion
   }
 }

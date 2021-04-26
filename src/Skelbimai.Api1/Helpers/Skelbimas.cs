@@ -7,12 +7,13 @@ namespace Skelbimai.Api1.Helpers
 {
   internal static class Skelbimas
   {
-    internal static Core.Skelbimas Core(Types.Skelbimas.POST.SkelbimasCreateData data) => new Core.Skelbimas() {
-      ID = data.ID,
-      Body = data.Body,
-      BodyShort = data.BodyShort,
-      Header = data.Header
-    };
+    internal static Core.Skelbimas Core(Types.Skelbimas.POST.SkelbimasCreateData data) => 
+      new Core.Skelbimas() {
+        ID = data.ID,
+        Body = data.Body,
+        BodyShort = data.BodyShort,
+        Header = data.Header
+      };
     public class SkelbimasDeep : Types.Skelbimas.GET.Skelbimas
     {
       public SkelbimasDeep(int? id, Core.Skelbimas core) : base()
