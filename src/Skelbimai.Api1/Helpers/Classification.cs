@@ -10,14 +10,15 @@ namespace Skelbimai.Api1.Helpers
     internal static Core.Classification Core(Types.Classification.Post.ClassificationCreateData data)
     {
       return new Core.Classification() {
-        UserID = data.WhoID,
+        UserID = data.Who.ID,
         SkelbimasID = data.What.ID,
         Action = CoreAction(data.Action)
       };
     }
     internal static Core.Classification Core(Core.Classification core, Types.Classification.Put.ClassificationUpdateData data)
     {
-      core.Action = CoreAction(data.Action);
+      if(data.Action != null)
+        core.Action = CoreAction(data.Action);
       return core;
     }
     internal static Types.Classification.Put.ClassificationUpdateData UpdateData(Types.Classification.Post.ClassificationCreateData createData)

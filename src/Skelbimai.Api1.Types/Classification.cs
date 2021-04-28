@@ -30,15 +30,15 @@ namespace Skelbimai.Api1.Types.Classification
   {
     public class ClassificationUpdateData
     {
-      public Actions.Action Action { get; set; }
+      public Actions.Action? Action { get; set; }
     }
   }
   namespace Post
   {
     public class ClassificationCreateData
     {
-      public Guid WhoID { get; set; }
-      public Skelbimas.POST.SkelbimasCreateData What { get;set; }
+      public IDed Who { get; set; }
+      public Skelbimas.POST.SkelbimasCreateData What { get; set; }
       public Actions.Action Action { get; set; }
     }
   }

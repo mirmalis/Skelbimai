@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Skelbimu blokuoklis",
+  "description": "suteikia galimybę pašalinti skelbimai.lt skelbimus",
+  "version": "0.1.0",
+  "background":{
+    "service_worker": "./background.js"
+  },
+  "permissions":[
+    "tabs",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions":[
+    "https://www.skelbiu.lt/"
+  ],
+  "content_scripts":[
+    { 
+      "matches": ["https://www.skelbiu.lt/skelbimai/*"],
+      "js": [
+        "./content_scripts/skelbimai/reikiaSlepti.js",
+        "./content_scripts/skelbimai.js"
+      ]
+    }
+  ]
+}

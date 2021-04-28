@@ -47,7 +47,9 @@ namespace Skelbimai.Api1
       app.UseHttpsRedirection();
 
       app.UseRouting();
-
+      app.UseCors(item => {
+        item.WithOrigins("https://www.skelbiu.lt").AllowAnyHeader();
+      });
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints => {
